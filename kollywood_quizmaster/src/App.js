@@ -1,34 +1,48 @@
-import React from 'react';
-import './App.css';
+import React, { useState } from "react";
+import "./App.css";
+import Login from "./components/Login";
+import Dashboard from "./components/Dashboard";
+import Navbar from "./components/Navbar";
+import QuizEngine from "./components/QuizEngine";
 
+// PUBLIC_INTERFACE
 function App() {
-  return (
-    <div className="app">
-      <nav className="navbar">
-        <div className="container">
-          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
-            <div className="logo">
-              <span className="logo-symbol">*</span> KAVIA AI
-            </div>
-            <button className="btn">Template Button</button>
-          </div>
-        </div>
-      </nav>
+  const [user, setUser] = useState(null);
+  const [currentGame, setCurrentGame] = useState(null);
 
-      <main>
-        <div className="container">
-          <div className="hero">
-            <div className="subtitle">AI Workflow Manager Template</div>
-            
-            <h1 className="title">kollywood_quizmaster</h1>
-            
-            <div className="description">
-              Start building your application.
-            </div>
-            
-            <button className="btn btn-large">Button</button>
-          </div>
-        </div>
+  // Logout: Reset everything
+  function handleLogout() {
+    setUser(null);
+    setCurrentGame(null);
+  }
+
+  function handleGoHome() {
+    setCurrentGame(null);
+  }
+
+  if (!user) return <Login onLogin={setUser} />;
+  if (!currentGame)
+    return (
+      <>
+        <Dashboard
+          onSelectGame={gameId => setCurrentGame(gameId)}
+        />
+      </>
+    );
+
+  // In-game view
+  return (
+    <div className="app" style={{ minHeight: "100vh", background: "#fff" }}>
+      <Navbar
+        username={user}
+        onLogout={handleLogout}
+        onGoHome={handleGoHome}
+      />
+      <main className="container" style={{ marginTop: 96, minHeight: "70vh" }}>
+        <QuizEngine
+          gameType={currentGame}
+          onExit={handleGoHome}
+        />
       </main>
     </div>
   );
